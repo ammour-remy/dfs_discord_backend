@@ -34,4 +34,46 @@ export class ServeurService {
 
     return serveurs;
   }
+  async addToBlacklist(serverId: string, userId: string): Promise<Serveur> {
+    const serveur = await this.serveurModel.findById(serverId);
+    if (serveur) {
+        if (!serveur.blacklist.includes(userId)) {
+            serveur.blacklist.push(userId);
+            await serveur.save();
+        }
+    }
+    return serveur;
+}
+
+
+  async addSalon(serverId: string, salonName: string): Promise<Serveur> {
+    const serveur = await this.serveurModel.findById(serverId);
+    if (serveur) {
+      const newId = serveur.salons.length > 0
+        ? Math.max(...serveur.salons.map(salon => salon.id || 0)) + 1 : 1;
+      serveur.salons.push({ id: newId, name: salonName });
+      await serveur.save();
+    }
+    const updatedServeur = await this.serveurModel.findById(serverId).lean();
+    return updatedServeur;
+  }
+  async addMessage(serverId: string, salonId: number, content: string, userId: string): Promise<Serveur> {
+    const serveur = await this.serveurModel.findById(serverId);
+    if (serveur) {
+      const utilisateur = await this.utilisateurModel.findById(userId);
+      if (utilisateur) {
+        const newMessage = {
+          salonId,
+          content,
+          userId,
+          email: utilisateur.email,
+          urlAvatar: utilisateur.urlAvatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXZ6Vw-Br-RRvMstTlTqbeGXw4PNepXRrTzg&s'
+        };
+        serveur.messages.push(newMessage);
+        await serveur.save();
+      }
+    }
+    const updatedServeur = await this.serveurModel.findById(serverId).lean();
+    return updatedServeur;
+  }
 }

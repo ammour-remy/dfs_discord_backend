@@ -17,6 +17,12 @@ export class Utilisateur {
 
   @Prop()
   serveurs: Serveur[];
+
+  @Prop({ type: [{ salonId: Number, content: String, userId: String, email: String, urlAvatar: String }] })
+  messages: { salonId: number; content: string; userId: string; email: string; urlAvatar: string }[];
+
+  @Prop({ type: [String] })
+  blacklist: string[];
 }
 
 export const UtilisateurSchema = SchemaFactory.createForClass(Utilisateur);

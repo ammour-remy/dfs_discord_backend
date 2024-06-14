@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { UtilisateurService } from './utilisateur.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from 'src/auth.guard';
@@ -49,5 +49,11 @@ export class UtilisateurController {
       email,
       serveurArejoindreDto._id,
     );
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async getMe(@Request() req) {
+    return this.utilisateurService.getByEmail(req.user.sub);
   }
 }

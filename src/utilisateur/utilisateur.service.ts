@@ -9,7 +9,7 @@ export class UtilisateurService {
   constructor(
     @InjectModel(Utilisateur.name)
     private utilisateurModel: Model<UtilisateurDocument>,
-  ) {}
+  ) { }
 
   async getByEmailAndClearPassword(
     email: string,
@@ -42,13 +42,16 @@ export class UtilisateurService {
     email: string,
     idServeurArejoindre: number,
   ): Promise<Utilisateur> {
-    //on ajoute le serveur a la liste des serveurs de l'utilsiateur
     const utilisateur = await this.utilisateurModel.findOneAndUpdate(
       { email: email },
-      { $addToSet: { serveurs: idServeurArejoindre } }, // $addToSet évite les duplications
-      { new: true }, // Retourner le document mis à jour
+      { $addToSet: { serveurs: idServeurArejoindre } },
+      { new: true },
     );
 
     return utilisateur;
+  }
+
+  async getByEmail(email: string): Promise<Utilisateur> {
+    return this.utilisateurModel.findOne({ email });
   }
 }

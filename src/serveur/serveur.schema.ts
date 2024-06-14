@@ -16,6 +16,15 @@ export class Serveur {
 
   @Prop()
   public: boolean;
+
+  @Prop({ type: [{ id: Number, name: String }], _id: false }) 
+  salons: { id: number; name: string }[];
+
+  @Prop({ type: [{ salonId: Number, content: String, userId: String, email: String, urlAvatar: String }] }) 
+  messages: { salonId: number; content: string; userId: string; email: string; urlAvatar: string }[];
+
+  @Prop({ type: [String], default: [] })
+  blacklist: string[];
 }
 
 export const ServeurSchema = SchemaFactory.createForClass(Serveur);
